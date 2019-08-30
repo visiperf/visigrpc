@@ -19,7 +19,7 @@ func (ge *grpcError) log() {
 	raven.CaptureError(ge.err, nil)
 }
 
-func NewGrpcError(code codes.Code, err error) error {
+func Error(code codes.Code, err error) error {
 	ge := grpcError{code: code, err: err}
 	if ge.isInternalServerError() {
 		ge.log()

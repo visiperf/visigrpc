@@ -22,7 +22,7 @@ func PanicInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServ
 				e = errors.New(`unknown error`)
 			}
 
-			err = NewGrpcError(codes.Internal, e)
+			err = Error(codes.Internal, e)
 		}
 	}()
 
