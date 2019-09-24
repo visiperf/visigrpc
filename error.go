@@ -1,6 +1,7 @@
 package visigrpc
 
 import (
+	"errors"
 	"github.com/getsentry/raven-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -27,6 +28,19 @@ func Error(code codes.Code, err error) error {
 	}
 
 	return status.Error(code, err.Error())
+}
+
+func FromError(err error) *grpcError {
+	code := codes.Unknown
+	msg := "unknown error"
+
+	st, ok := status.FromError(err)
+	if ok {
+		code = st.Code()
+		msg = st.Message()
+	}
+
+	return &grpcError{Code: code, Err: errors.New(msg)}
 }
 
 func GrpcCodeFromHttpStatus(status int) codes.Code {
