@@ -8,20 +8,20 @@ import (
 )
 
 type grpcError struct {
-	code codes.Code
-	err  error
+	Code codes.Code
+	Err  error
 }
 
 func (ge *grpcError) isInternalServerError() bool {
-	return ge.code == codes.Unknown || ge.code == codes.Internal || ge.code == codes.DataLoss
+	return ge.Code == codes.Unknown || ge.Code == codes.Internal || ge.Code == codes.DataLoss
 }
 
 func (ge *grpcError) log() {
-	raven.CaptureError(ge.err, nil)
+	raven.CaptureError(ge.Err, nil)
 }
 
 func Error(code codes.Code, err error) error {
-	ge := grpcError{code: code, err: err}
+	ge := grpcError{Code: code, Err: err}
 	if ge.isInternalServerError() {
 		ge.log()
 	}
