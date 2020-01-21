@@ -13,18 +13,9 @@ type grpcError struct {
 	Err  error
 }
 
-func (ge *grpcError) isInternalServerError() bool {
-	return ge.Code == codes.Unknown || ge.Code == codes.Internal || ge.Code == codes.DataLoss
-}
-
-func (ge *grpcError) log() {
-	raven.CaptureError(ge.Err, nil)
-}
-
 func Error(code codes.Code, err error) error {
-	ge := grpcError{Code: code, Err: err}
-	if ge.isInternalServerError() {
-		ge.log()
+	if code == codes.Unknown || code == codes.Internal || code == codes.DataLoss {
+		raven.CaptureError(err, nil)
 	}
 
 	return status.Error(code, err.Error())
