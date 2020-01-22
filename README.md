@@ -23,3 +23,5 @@ Use `go get` to install this package.
 ### Panic interceptor
 
 ## References
+
+* Sentry : [github.com/getsentry/raven-go](https://github.com/getsentry/raven-go)
