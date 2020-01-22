@@ -36,9 +36,9 @@ func main() {
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
-	if err != nil {
+  if err != nil {
     ...
-	}
+  }
   
   s := grpc.NewServer()
   
@@ -46,7 +46,7 @@ func main() {
   
   if err := s.Serve(lis); err != nil {
     ...
-	}
+  }
 }
 
 func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
@@ -72,9 +72,9 @@ func main() {
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
-	if err != nil {
+  if err != nil {
     ...
-	}
+  }
   
   s := grpc.NewServer()
   
@@ -82,7 +82,7 @@ func main() {
   
   if err := s.Serve(lis); err != nil {
     ...
-	}
+  }
 }
 
 func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
