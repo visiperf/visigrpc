@@ -114,6 +114,53 @@ code := GrpcCodeFromHttpStatus(http.StatusForbidden) // http status -> 403 (Forb
 
 ### Panic interceptor
 
+Visigrpc also provide a little `RecoveryHandler` to capture and log panics for `Unary` and `Stream` functions.
+
+```go
+type server struct { }
+
+func main() {
+  // init Sentry config
+  if err := raven.SetDSN(...); err != nil {
+    ...
+  }
+  raven.SetEnvironment(...) 
+  
+  // gRPC server
+  lis, err := net.Listen("tcp", ":9090")
+  if err != nil {
+    ...
+  }
+  
+  var opts = []grpc_recovery.Option{
+		grpc_recovery.WithRecoveryHandler(visigrpc.RecoveryHandler),
+	}
+
+	s := grpc.NewServer(
+		grpc_middleware.WithUnaryServerChain(
+			grpc_recovery.UnaryServerInterceptor(opts...),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_recovery.StreamServerInterceptor(opts...),
+		),
+	)
+  
+  RegisterServiceServer(s, &server{})
+  
+  if err := s.Serve(lis); err != nil {
+    ...
+  }
+}
+
+func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
+  panic("implement me") // will return codes.Unknown with message "implement me" and log error on Sentry
+}
+```
+
+
+
 ## References
 
 * Sentry : [github.com/getsentry/raven-go](https://github.com/getsentry/raven-go)
+* Go gRPC Middleware : [github.com/grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)
+
