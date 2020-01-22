@@ -58,7 +58,7 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 
 ### From Error
 
-If you receive a gRPC error (made with visigrpc.Error(...) or with status.Error(...)), you can decode it with `FromError(err error) *grpcError` to retrieve the gRPC code and the message.
+If you receive a gRPC error (made with visigrpc.Error(...) or status.Error(...)), you can decode it with `FromError(err error) *grpcError` to retrieve the gRPC code and message.
 
 ```go
 type server struct { }
@@ -114,7 +114,7 @@ code := GrpcCodeFromHttpStatus(http.StatusForbidden) // http status -> 403 (Forb
 
 ### Panic interceptor
 
-Visigrpc also provide a little `RecoveryHandler` to capture and log panics for `Unary` and `Stream` functions.
+Visigrpc also provide a `RecoveryHandler` to capture and log panics for `Unary` and `Stream` functions.
 
 ```go
 type server struct { }
@@ -133,17 +133,17 @@ func main() {
   }
   
   var opts = []grpc_recovery.Option{
-		grpc_recovery.WithRecoveryHandler(visigrpc.RecoveryHandler),
-	}
+    grpc_recovery.WithRecoveryHandler(visigrpc.RecoveryHandler),
+  }
 
-	s := grpc.NewServer(
-		grpc_middleware.WithUnaryServerChain(
-			grpc_recovery.UnaryServerInterceptor(opts...),
-		),
-		grpc_middleware.WithStreamServerChain(
-			grpc_recovery.StreamServerInterceptor(opts...),
-		),
-	)
+  s := grpc.NewServer(
+    grpc_middleware.WithUnaryServerChain(
+       grpc_recovery.UnaryServerInterceptor(opts...),
+    ),
+    grpc_middleware.WithStreamServerChain(
+       grpc_recovery.StreamServerInterceptor(opts...),
+    ),
+  )
   
   RegisterServiceServer(s, &server{})
   
