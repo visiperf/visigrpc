@@ -104,6 +104,14 @@ func (s *server) Create(ctx context.Context, in *CreateRequest) (*CreateResponse
 
 ### gRPC code from HTTP status
 
+If you make an HTTP request, you can use the `GrpcCodeFromHttpStatus(status int) codes.Code` func to convert HTTP status code in response to gRPC code.
+
+```go
+code := GrpcCodeFromHttpStatus(http.StatusForbidden) // http status -> 403 (Forbidden)
+
+// code -> 7 (codes.PermissionDenied)
+```
+
 ### Panic interceptor
 
 ## References
