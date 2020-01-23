@@ -1,5 +1,7 @@
 # gRPC helpers, middlewares ... for Golang
 
+Package `visigrpc` provide some functions to help you making a gRPC server. Errors logged on [Sentry](https://sentry.io), Panic interceptor, HTTP status to gRPC code, ... Everything is made to assist you :)
+
 Table of contents
 =================
 
