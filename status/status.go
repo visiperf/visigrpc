@@ -29,5 +29,14 @@ func Error(code codes.Code, msg string) error {
 }
 
 func FromError(err error) *Status {
-	return nil
+	code := codes.Unknown
+	msg := "unknown error"
+
+	st, ok := status.FromError(err)
+	if ok {
+		code = st.Code()
+		msg = st.Message()
+	}
+
+	return &Status{Code: uint32(code), Message: msg}
 }
