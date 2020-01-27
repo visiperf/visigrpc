@@ -2,6 +2,7 @@ package visigrpc
 
 import (
 	"errors"
+	"github.com/visiperf/visigrpc/status"
 	"google.golang.org/grpc/codes"
 )
 
@@ -17,5 +18,5 @@ func RecoveryHandler(p interface{}) error {
 		e = errors.New(`unknown error`)
 	}
 
-	return Error(codes.Unknown, e)
+	return status.Error(codes.Unknown, e.Error())
 }
