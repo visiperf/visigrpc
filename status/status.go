@@ -1,20 +1,26 @@
 package status
 
-import "google.golang.org/grpc/codes"
+import (
+	"github.com/getsentry/raven-go"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc/codes"
+)
 
 type Status struct {
 	Code    uint32
 	Message string
 }
 
-func (s *Status) isInternal() bool {
-	return false
+func (s *Status) toError() error {
+	return nil
 }
 
-func (s *Status) log() {}
-
 func New(code codes.Code, msg string) *Status {
-	return nil
+	if code == codes.Unknown || code == codes.Internal || code == codes.DataLoss {
+		raven.CaptureError(errors.New(msg), nil)
+	}
+
+	return &Status{Code: uint32(code), Message: msg}
 }
 
 func Error(code codes.Code, msg string) error {
