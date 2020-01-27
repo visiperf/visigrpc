@@ -4,6 +4,7 @@ import (
 	"github.com/getsentry/raven-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Status struct {
@@ -12,7 +13,7 @@ type Status struct {
 }
 
 func (s *Status) toError() error {
-	return nil
+	return status.Error(codes.Code(s.Code), s.Message)
 }
 
 func New(code codes.Code, msg string) *Status {
@@ -24,7 +25,7 @@ func New(code codes.Code, msg string) *Status {
 }
 
 func Error(code codes.Code, msg string) error {
-	return nil
+	return New(code, msg).toError()
 }
 
 func FromError(err error) *Status {
