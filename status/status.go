@@ -1,8 +1,8 @@
 package status
 
 import (
+	"errors"
 	"github.com/getsentry/raven-go"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
