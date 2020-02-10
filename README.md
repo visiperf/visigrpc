@@ -7,9 +7,11 @@ Table of contents
 
   * [Install](#install)
   * [Usage](#usage)
-    * [Error](#error)
-    * [From error](#from-error)
-    * [gRPC code from HTTP status](#grpc-code-from-http-status)
+      * [Status](#status)
+        * [Error](#error)
+        * [New](#new)
+        * [From error](#from-error)
+        * [gRPC code from HTTP status](#grpc-code-from-http-status)
     * [Panic interceptor](#panic-interceptor)
   * [References](#references)
 
@@ -22,9 +24,11 @@ Use `go get` to install this package.
 
 ## Usage
 
-### Error
+### Status
 
-The `Error(code codes.Code, err error) error` function is used to return a gRPC error and log it into [Sentry](https://sentry.io).
+#### Error
+
+The `Error(code codes.Code, msg string) error` function is used to return a gRPC error and log it into [Sentry](https://sentry.io).
 
 ```go
 type server struct { }
@@ -52,15 +56,15 @@ func main() {
 }
 
 func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
-  return nil, visigrpc.Error(codes.Unimplemented, errors.New("implement me"))
+  return nil, status.Error(codes.Unimplemented, "implement me")
 }
 ```
 
 ##### IMPORTANT : Only `Unknown`, `Internal` and `DataLoss` errors will be reported in Sentry !
 
-### From Error
+#### New
 
-If you receive a gRPC error (made with visigrpc.Error(...) or status.Error(...)), you can decode it with `FromError(err error) *grpcError` to retrieve the gRPC code and message.
+The `New(code codes.Code, msg string) *Status` function has same process as `Error(...) error` function, but returns a `*Status` instance instead of `error`.
 
 ```go
 type server struct { }
@@ -88,28 +92,69 @@ func main() {
 }
 
 func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
-  return nil, visigrpc.Error(codes.Unimplemented, errors.New("implement me"))
-}
-
-func (s *server) Create(ctx context.Context, in *CreateRequest) (*CreateResponse, error) {
-  resp, err := s.Get(ctx, &GetRequest{})
-  if err != nil {
-    ge := visigrpc.FromError(err)
-    // ge.Code -> codes.Unimplemented
-    // ge.Err -> "implement me"
-    ...
-  }
+  st := status.New(codes.Internal, "Oups, an error !")
+  // st.Code -> codes.Internal
+  // st.Message -> "Oups, an error !"
+  ...
   
-  return nil, visigrpc.Error(codes.Unimplemented, errors.New("implement me"))
+  return nil, status.Error(codes.Unimplemented, "implement me")
 }
 ```
 
-### gRPC code from HTTP status
+
+
+#### From Error
+
+If you receive a gRPC error (made with status.Error(...)), you can decode it with `FromError(err error) *Status` to retrieve the gRPC code and message.
+
+```go
+type server struct { }
+
+func main() {
+  // init Sentry config
+  if err := raven.SetDSN(...); err != nil {
+    ...
+  }
+  raven.SetEnvironment(...) 
+  
+  // gRPC server
+  lis, err := net.Listen("tcp", ":9090")
+  if err != nil {
+    ...
+  }
+  
+  s := grpc.NewServer()
+  
+  RegisterServiceServer(s, &server{})
+  
+  if err := s.Serve(lis); err != nil {
+    ...
+  }
+}
+
+func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
+  return nil, status.Error(codes.Unimplemented, "implement me")
+}
+
+func (s *server) Create(ctx context.Context, in *CreateRequest) (*CreateResponse, error) {
+  resp, err := s.Get(ctx, &GetRequest{}) // just for example, never directly call self functions with `s *server` !
+  if err != nil {
+    st := status.FromError(err)
+    // st.Code -> codes.Unimplemented
+    // st.Message -> "implement me"
+    ...
+  }
+  
+  return nil, status.Error(codes.Unimplemented, "implement me")
+}
+```
+
+#### gRPC code from HTTP status
 
 If you make an HTTP request, you can use the `GrpcCodeFromHttpStatus(status int) codes.Code` func to convert HTTP status code in response to gRPC code.
 
 ```go
-code := GrpcCodeFromHttpStatus(http.StatusForbidden) // http status -> 403 (Forbidden)
+code := status.GrpcCodeFromHttpStatus(http.StatusForbidden) // http status -> 403 (Forbidden)
 
 // code -> 7 (codes.PermissionDenied)
 ```

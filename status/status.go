@@ -1,4 +1,4 @@
-package visigrpc
+package status
 
 import (
 	"errors"
@@ -8,20 +8,28 @@ import (
 	"net/http"
 )
 
-type grpcError struct {
-	Code codes.Code
-	Err  error
+type Status struct {
+	Code    uint32
+	Message string
 }
 
-func Error(code codes.Code, err error) error {
+func (s *Status) toError() error {
+	return status.Error(codes.Code(s.Code), s.Message)
+}
+
+func New(code codes.Code, msg string) *Status {
 	if code == codes.Unknown || code == codes.Internal || code == codes.DataLoss {
-		raven.CaptureError(err, nil)
+		raven.CaptureError(errors.New(msg), nil)
 	}
 
-	return status.Error(code, err.Error())
+	return &Status{Code: uint32(code), Message: msg}
 }
 
-func FromError(err error) *grpcError {
+func Error(code codes.Code, msg string) error {
+	return New(code, msg).toError()
+}
+
+func FromError(err error) *Status {
 	code := codes.Unknown
 	msg := "unknown error"
 
@@ -31,7 +39,7 @@ func FromError(err error) *grpcError {
 		msg = st.Message()
 	}
 
-	return &grpcError{Code: code, Err: errors.New(msg)}
+	return &Status{Code: uint32(code), Message: msg}
 }
 
 func GrpcCodeFromHttpStatus(status int) codes.Code {
