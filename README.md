@@ -8,8 +8,8 @@ Table of contents
   * [Install](#install)
   * [Usage](#usage)
       * [Status](#status)
-        * [New](#new)
         * [Error](#error)
+        * [New](#new)
         * [From error](#from-error)
         * [gRPC code from HTTP status](#grpc-code-from-http-status)
     * [Panic interceptor](#panic-interceptor)
@@ -25,10 +25,6 @@ Use `go get` to install this package.
 ## Usage
 
 ### Status
-
-#### New
-
-
 
 #### Error
 
@@ -66,6 +62,47 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 
 ##### IMPORTANT : Only `Unknown`, `Internal` and `DataLoss` errors will be reported in Sentry !
 
+#### New
+
+The `New(code codes.Code, msg string) *Status` function has same process as `Error(...) error` function, but returns a `*Status` instance instead of `error`.
+
+```go
+type server struct { }
+
+func main() {
+  // init Sentry config
+  if err := raven.SetDSN(...); err != nil {
+    ...
+  }
+  raven.SetEnvironment(...) 
+  
+  // gRPC server
+  lis, err := net.Listen("tcp", ":9090")
+  if err != nil {
+    ...
+  }
+  
+  s := grpc.NewServer()
+  
+  RegisterServiceServer(s, &server{})
+  
+  if err := s.Serve(lis); err != nil {
+    ...
+  }
+}
+
+func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) {
+  st := status.New(codes.Internal, "Oups, an error !")
+  // st.Code -> codes.Internal
+  // st.Message -> "Oups, an error !"
+  ...
+  
+  return nil, status.Error(codes.Unimplemented, "implement me")
+}
+```
+
+
+
 #### From Error
 
 If you receive a gRPC error (made with status.Error(...)), you can decode it with `FromError(err error) *Status` to retrieve the gRPC code and message.
@@ -102,9 +139,9 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 func (s *server) Create(ctx context.Context, in *CreateRequest) (*CreateResponse, error) {
   resp, err := s.Get(ctx, &GetRequest{}) // just for example, never directly call self functions with `s *server` !
   if err != nil {
-    ge := status.FromError(err)
-    // ge.Code -> codes.Unimplemented
-    // ge.Message -> "implement me"
+    st := status.FromError(err)
+    // st.Code -> codes.Unimplemented
+    // st.Message -> "implement me"
     ...
   }
   
