@@ -3,33 +3,29 @@ package status
 import (
 	"errors"
 	"github.com/getsentry/raven-go"
+	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
 )
 
-type Status struct {
-	Code    uint32
-	Message string
-}
-
-func (s *Status) toError() error {
-	return status.Error(codes.Code(s.Code), s.Message)
-}
-
-func New(code codes.Code, msg string) *Status {
+func newStatus(code codes.Code, msg string) *status.Status {
 	if code == codes.Unknown || code == codes.Internal || code == codes.DataLoss {
 		raven.CaptureError(errors.New(msg), nil)
 	}
 
-	return &Status{Code: uint32(code), Message: msg}
+	return status.New(code, msg)
+}
+
+func New(code codes.Code, msg string) *spb.Status {
+	return newStatus(code, msg).Proto()
 }
 
 func Error(code codes.Code, msg string) error {
-	return New(code, msg).toError()
+	return newStatus(code, msg).Err()
 }
 
-func FromError(err error) *Status {
+func FromError(err error) *spb.Status {
 	code := codes.Unknown
 	msg := "unknown error"
 
@@ -39,7 +35,7 @@ func FromError(err error) *Status {
 		msg = st.Message()
 	}
 
-	return &Status{Code: uint32(code), Message: msg}
+	return status.New(code, msg).Proto()
 }
 
 func GrpcCodeFromHttpStatus(status int) codes.Code {
