@@ -64,7 +64,7 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 
 #### New
 
-The `New(code codes.Code, msg string) *Status` function has same process as `Error(...) error` function, but returns a `*Status` instance instead of `error`.
+The `New(code codes.Code, msg string) *spb.Status` function has same process as `Error(...) error` function, but returns a `*spb.Status` instance instead of `error`.
 
 ```go
 type server struct { }
@@ -105,7 +105,7 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 
 #### From Error
 
-If you receive a gRPC error (made with status.Error(...)), you can decode it with `FromError(err error) *Status` to retrieve the gRPC code and message.
+If you receive a gRPC error (made with status.Error(...)), you can decode it with `FromError(err error) *spb.Status` to retrieve the gRPC code and message.
 
 ```go
 type server struct { }
