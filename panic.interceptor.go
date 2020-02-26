@@ -2,7 +2,7 @@ package visigrpc
 
 import (
 	"errors"
-	"github.com/visiperf/visigrpc/status"
+	"github.com/visiperf/visigrpc/v2/status"
 	"google.golang.org/grpc/codes"
 )
 

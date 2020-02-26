@@ -1,4 +1,4 @@
-module github.com/visiperf/visigrpc
+module github.com/visiperf/visigrpc/v2
 
 go 1.13
 
