@@ -2,16 +2,17 @@ package status
 
 import (
 	"errors"
-	"github.com/getsentry/raven-go"
+	"net/http"
+
+	"github.com/getsentry/sentry-go"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"net/http"
 )
 
 func newStatus(code codes.Code, msg string) *status.Status {
 	if code == codes.Unknown || code == codes.Internal || code == codes.DataLoss {
-		raven.CaptureError(errors.New(msg), nil)
+		sentry.CaptureException(errors.New(msg))
 	}
 
 	return status.New(code, msg)
