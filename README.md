@@ -36,12 +36,12 @@ type server struct { }
 func main() {
   // init Sentry config
   if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         SENTRY_DSN,
-		Environment: SENTRY_ENV,
-		Transport:   sentry.NewHTTPSyncTransport(),
-	}); err != nil {
-		...
-	}
+    Dsn:         SENTRY_DSN,
+    Environment: SENTRY_ENV,
+    Transport:   sentry.NewHTTPSyncTransport(),
+  }); err != nil {
+    ...
+  }
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -75,12 +75,12 @@ type server struct { }
 func main() {
   // init Sentry config
   if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         SENTRY_DSN,
-		Environment: SENTRY_ENV,
-		Transport:   sentry.NewHTTPSyncTransport(),
-	}); err != nil {
-		...
-	}
+    Dsn:         SENTRY_DSN,
+    Environment: SENTRY_ENV,
+    Transport:   sentry.NewHTTPSyncTransport(),
+  }); err != nil {
+    ...
+  }
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -119,12 +119,12 @@ type server struct { }
 func main() {
   // init Sentry config
   if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         SENTRY_DSN,
-		Environment: SENTRY_ENV,
-		Transport:   sentry.NewHTTPSyncTransport(),
-	}); err != nil {
-		...
-	}
+    Dsn:         SENTRY_DSN,
+    Environment: SENTRY_ENV,
+    Transport:   sentry.NewHTTPSyncTransport(),
+  }); err != nil {
+    ...
+  }
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -178,12 +178,12 @@ type server struct { }
 func main() {
   // init Sentry config
   if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         SENTRY_DSN,
-		Environment: SENTRY_ENV,
-		Transport:   sentry.NewHTTPSyncTransport(),
-	}); err != nil {
-		...
-	}
+    Dsn:         SENTRY_DSN,
+    Environment: SENTRY_ENV,
+    Transport:   sentry.NewHTTPSyncTransport(),
+  }); err != nil {
+    ...
+  }
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
