@@ -35,10 +35,13 @@ type server struct { }
 
 func main() {
   // init Sentry config
-  if err := raven.SetDSN(...); err != nil {
-    ...
-  }
-  raven.SetEnvironment(...) 
+  if err := sentry.Init(sentry.ClientOptions{
+		Dsn:         SENTRY_DSN,
+		Environment: SENTRY_ENV,
+		Transport:   sentry.NewHTTPSyncTransport(),
+	}); err != nil {
+		...
+	}
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -71,10 +74,13 @@ type server struct { }
 
 func main() {
   // init Sentry config
-  if err := raven.SetDSN(...); err != nil {
-    ...
-  }
-  raven.SetEnvironment(...) 
+  if err := sentry.Init(sentry.ClientOptions{
+		Dsn:         SENTRY_DSN,
+		Environment: SENTRY_ENV,
+		Transport:   sentry.NewHTTPSyncTransport(),
+	}); err != nil {
+		...
+	}
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -112,10 +118,13 @@ type server struct { }
 
 func main() {
   // init Sentry config
-  if err := raven.SetDSN(...); err != nil {
-    ...
-  }
-  raven.SetEnvironment(...) 
+  if err := sentry.Init(sentry.ClientOptions{
+		Dsn:         SENTRY_DSN,
+		Environment: SENTRY_ENV,
+		Transport:   sentry.NewHTTPSyncTransport(),
+	}); err != nil {
+		...
+	}
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -168,10 +177,13 @@ type server struct { }
 
 func main() {
   // init Sentry config
-  if err := raven.SetDSN(...); err != nil {
-    ...
-  }
-  raven.SetEnvironment(...) 
+  if err := sentry.Init(sentry.ClientOptions{
+		Dsn:         SENTRY_DSN,
+		Environment: SENTRY_ENV,
+		Transport:   sentry.NewHTTPSyncTransport(),
+	}); err != nil {
+		...
+	}
   
   // gRPC server
   lis, err := net.Listen("tcp", ":9090")
@@ -208,6 +220,6 @@ func (s *server) Get(ctx context.Context, in *GetRequest) (*GetResponse, error) 
 
 ## References
 
-* Sentry : [github.com/getsentry/raven-go](https://github.com/getsentry/raven-go)
+* Sentry : [github.com/getsentry/sentry-go](https://github.com/getsentry/sentry-go)
 * Go gRPC Middleware : [github.com/grpc-ecosystem/go-grpc-middleware](https://github.com/grpc-ecosystem/go-grpc-middleware)
 
