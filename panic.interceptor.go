@@ -2,6 +2,7 @@ package visigrpc
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/visiperf/visigrpc/v3/status"
 	"google.golang.org/grpc/codes"
@@ -19,5 +20,5 @@ func RecoveryHandler(p interface{}) error {
 		e = errors.New(`unknown error`)
 	}
 
-	return status.Error(codes.Unknown, e.Error())
+	return status.Error(codes.Unknown, fmt.Sprintf("panic: %v", e.Error()))
 }
