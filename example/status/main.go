@@ -9,13 +9,13 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
-const SENTRY_DSN = "YOUR_SENTRY_DSN"
-const SENTRY_ENV = "YOUR_SENTRY_ENV"
+const sentryDsn = "YOUR_SENTRY_DSN"
+const sentryEnv = "YOUR_SENTRY_ENV"
 
 func main() {
 	if err := sentry.Init(sentry.ClientOptions{
-		Dsn:         SENTRY_DSN,
-		Environment: SENTRY_ENV,
+		Dsn:         sentryDsn,
+		Environment: sentryEnv,
 		Transport:   sentry.NewHTTPSyncTransport(),
 	}); err != nil {
 		log.Fatalf("failed to init sentry: %v", err)
